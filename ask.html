@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>문의하기</title>
+    <style type="text/css">html,body {height: 100%;}</style>
+    <link href="./css/ask.css" type="text/css" rel="stylesheet" />
+    <link href="./css/font.css" type="text/css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700&display=swap" rel="stylesheet">    
+    <link rel="stylesheet" media="screen and (max-width:1024px)" href="./css/ask(mobile).css">
+</head>
+
+<body>
+    <a href="./home.html" class="Blokee">Blokee</a>
+    <div class="container" id="container">
+        <form class="gform" method="POST" enctype="multipart/form-data"
+            action="https://script.google.com/macros/s/AKfycby-etDAJDLagPn88TpQKGK22ffEz-MUMyXxZIMEQFcZk0rFc6ju/exec">
+            <input id="honeypot" type="text" name="honeypot" value="" style="display: none;" />
+            <h4 class="ask">문의하기</h4>
+            <div class="email">
+                <h4 class="input_list">이메일</h4>
+                <input type="email" id="email" placeholder="gungum@gmail.com" name="email" onblur="validEmail()">
+                <div id="emailAlert"></div>
+                
+                <script>
+                    function validEmail(){
+                        var email = document.querySelector('#email').value;
+                        var rex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                        var emailAlert = document.getElementById("emailAlert");
+                        if(!email.match(rex)){
+                            emailAlert.innerText = "이메일 형식을 다시 확인해주세요.";
+                        }else{
+                            emailAlert.innerText = "";
+                        }
+                    }
+                </script>
+                
+            </div>
+            <div class="content">
+                <h4 class="input_list">문의 내용</h4>
+                <textarea cols="120" rows="10" id="content" placeholder="문의할 내용을 써주세요" name="content"></textarea>
+                <div id="contentAlert"></div>
+            </div>
+            <div class="filebox">
+                <h4 class="input_list">파일 첨부(선택)</h4>
+                <label for="file"><span>필요한 문서를 업로드하세요. </span><span>최대 25MB / 5개</span></label>
+                <input type="file" id="file" name="file" onchange="getData()">
+            </div>
+            <div id="data"></div>
+            <div class="buttons">
+                <input type="submit" value="보내기" id="submit_ask">
+                <input type="reset" value="취소">
+            </div>
+        </form>
+        <div class="box" style="display: none;">
+            <div class="msg">
+                <span>작성하신 내용이 </span>블로키에 전달되었습니다.
+            </div>
+            <div class="after_content">
+                <div>보내주신 내용을 꼼꼼하게 확인하고 답변드릴 예정입니다.</div>
+                <div>앞으로도 블로키에 많은 관심 부탁드립니다.</div>
+                <div>고맙습니다.</div>
+            </div>
+            <button class="completed" id="completed" onclick="location.href='./home.html'">완료</button>
+        </div>
+    </div>
+    <script data-cfasync="false" src="./js/submission.js"></script>
+</body>
+<script>
+    var fileCount = 0;
+    function getData() {
+        if (fileCount >= 5) {
+            alert("파일은 최대 5개까지 올릴 수 있어요");
+            return;
+        }
+        var html = "";
+        var file = document.querySelector('#file').files[0];
+        var fr = new FileReader();
+        fr.fileName = file.name;
+        fr.number = fileCount;
+        var div = document.createElement('div');
+        div.className = "data_item";
+        fr.onload = function (e) {
+            html += '<input type="hidden" name="data' + e.target.number + '" value="' + e.target.result + '" >';
+            html += '<input type="hidden" name="filename' + e.target.number + '" value="' + e.target.fileName + '" >';
+            html += '<b>'+ e.target.fileName + '</b><input type="image" class="delete_img" onClick="delete_file(this)" src="./images/224.png"></br>';
+            div.innerHTML = html;
+        }
+        fr.readAsDataURL(file);
+        document.querySelector("#data").appendChild(div);
+        fileCount++;
+    }
+
+    function delete_file(obj) {
+        alert("파일을 삭제하시겠습니까?");
+        obj.parentNode.remove();
+    }
+    
+</script>
+
+</html>
